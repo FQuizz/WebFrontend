@@ -12,6 +12,7 @@ enum Filter {
 export default function QuizzesPage() {
   const [url] = useSearchParams();
   const [quizzes, setQuizzes] = useState<Array<Quiz>>([]);
+  const [filterQuiz, setFilterQuiz] = useState<Array<Quiz>>([]);
   const [filter, setFilter] = useState<Filter>(Filter.ALL);
   const navigate = useNavigate();
   useEffect(() => {
@@ -33,6 +34,12 @@ export default function QuizzesPage() {
       })
       .catch((err) => console.log(err));
   }, [url]);
+
+  useEffect(() => {
+    if (quizzes.length > 0) {
+      setFilterQuiz(quizzes);
+    }
+  },[quizzes]);
   const handleAddQuiz = () => {
     createQuiz({
       title: "",
@@ -57,6 +64,10 @@ export default function QuizzesPage() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-[20px]">
             <button
+              onClick={() => {
+                setFilter(Filter.ALL);
+                setFilterQuiz(quizzes);
+              }}
               className={`bg-[white] ${
                 filter === Filter.ALL
                   ? "border-[1.7px] border-[#e5e7eb]"
@@ -69,6 +80,11 @@ export default function QuizzesPage() {
               </span>
             </button>
             <button
+              onClick={() => {
+                setFilter(Filter.PUBLIC);
+                setFilterQuiz(quizzes.filter((quiz) => quiz.visibility === "PUBLIC")
+                );
+              }}
               className={`bg-[white] ${
                 filter === Filter.PUBLIC
                   ? "border-[1.7px] border-[#e5e7eb]"
@@ -82,6 +98,11 @@ export default function QuizzesPage() {
               </span>
             </button>
             <button
+              onClick={() => {
+                setFilter(Filter.PRIVATE);
+                setFilterQuiz(quizzes.filter((quiz) => quiz.visibility === "PRIVATE")
+                );
+              }}
               className={`bg-[white] ${
                 filter === Filter.PRIVATE
                   ? "border-[1.7px] border-[#e5e7eb]"
@@ -106,7 +127,7 @@ export default function QuizzesPage() {
           </button>
         </div>
         <div className="border-[1.7px] border-[#e5e7eb] rounded-[16px] p-[10px]">
-          {quizzes?.map((quiz) => (
+          {filterQuiz?.map((quiz) => (
             <QuizItem quiz={quiz} key={quiz.quizId} />
           ))}
         </div>
