@@ -4,6 +4,7 @@ import { FaCoins } from "react-icons/fa";
 import PercentageBar from "./PercentageBar";
 import { FaCheck } from "react-icons/fa";
 import { FaXmark } from "react-icons/fa6";
+import { useEffect } from "react";
 interface Props {
   question: Question;
   answers: Array<Answer>;
@@ -14,6 +15,18 @@ export default function QuestionReviewItem({
   answers,
   index,
 }: Props) {
+  useEffect(() => {
+    console.log(answers.map(answer => answer.choices.map(choice => choice.choiceId)))
+    console.log(
+      answers.filter((answers) =>
+        answers.choices
+          .map((c) => c.choiceId)
+          .some(
+            (choiceId) => choiceId === "005d4233-4d4d-49c7-9078-9a1238d950d2"
+          )
+      ).length
+    );
+  });
   return (
     <div className="border border-[#e5e7eb] rounded-[8px] shadow-sm p-[15px]">
       <div className="flex items-center justify-between pb-[10px]">
@@ -43,10 +56,12 @@ export default function QuestionReviewItem({
             <div className="flex items-center gap-[5px]">
               <span className="font-semibold font-sans">
                 {answers.length != 0
-                  ? answers.reduce(
-                      (prev, cur) => prev + cur.accuracyFactor!,
-                      0
-                    ) / answers.length
+                  ? (
+                      answers.reduce(
+                        (prev, cur) => prev + cur.accuracyFactor!,
+                        0
+                      ) / answers.length
+                    ).toFixed(2)
                   : 0}
                 %
               </span>
@@ -92,7 +107,9 @@ export default function QuestionReviewItem({
                               answers.filter((answers) =>
                                 answers.choices
                                   .map((c) => c.choiceId)
-                                  .includes(choice.choiceId)
+                                  .some(
+                                    (choiceId) => choiceId === choice.choiceId
+                                  )
                               ).length) /
                               answers.length
                           )}px`,
@@ -130,7 +147,7 @@ export default function QuestionReviewItem({
                 <div className="font-semibold">
                   {
                     answers.filter(
-                      (answer) => answer.result === AnswerResult.CORRECT
+                      (answer) => answer.result === AnswerResult.CORRECT && answer.choices.length !== 0
                     ).length
                   }{" "}
                   answers
@@ -157,7 +174,7 @@ export default function QuestionReviewItem({
                 <div className="font-semibold">
                   {
                     answers.filter(
-                      (answer) => answer.result === AnswerResult.PARTIAL
+                      (answer) => answer.result === AnswerResult.PARTIAL && answer.choices.length !== 0
                     ).length
                   }{" "}
                   answers
@@ -169,7 +186,7 @@ export default function QuestionReviewItem({
                   style={{
                     width: `${
                       (answers.filter(
-                        (answer) => answer.result === AnswerResult.PARTIAL
+                        (answer) => answer.result === AnswerResult.PARTIAL && answer.choices.length !== 0
                       ).length /
                         answers.length) *
                       100

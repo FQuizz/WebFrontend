@@ -11,7 +11,7 @@ export default function QuestionReviewPage(){
     return (
         <div className="flex flex-col gap-[20px]">
             {questions?.map((question, index) => (
-                <QuestionReviewItem index={index + 1} question={question} answers={answers.filter(answer => answer.question === question.questionId)}/>
+                <QuestionReviewItem key={question.questionId} index={index + 1} question={question} answers={answers.filter(answer => answer.question === question.questionId && answer.choices.length !== 0)}/>
             ))}
         </div>
     )

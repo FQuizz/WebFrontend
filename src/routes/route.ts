@@ -11,6 +11,9 @@ import QuestionReviewPage from "@/pages/ReportPage/QuestionReviewPage";
 import ReportPage from "@/pages/ReportPage/ReportPage";
 import React from "react";
 import HomePage from "@/pages/HomePage/HomePage";
+import PreGamePage from "@/pages/AttemptPage/PreGamePage";
+import PlayQuizGame from "@/pages/AttemptPage/PlayQuizGame";
+import SummaryPage from "@/pages/AttemptPage/SummaryPage";
 
 export interface Route {
   path: string;
@@ -80,4 +83,18 @@ export const routes: Array<Route> = [
     layout: ReportPageLayout,
     isAuth: true,
   },
+  {
+    path: "/quizzes/pre-game/:quizId",
+    component: PreGamePage,
+    isAuth: false
+  },
+  {
+    path: "/quizzes/play/:quizId/attempts/:attemptId",
+    component: PlayQuizGame,
+    isAuth: false
+  },{
+    path:"/quizzes/summary/:quizId/attempts/:attemptId",
+    component: SummaryPage,
+    isAuth:false
+  }
 ];

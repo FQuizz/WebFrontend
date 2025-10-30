@@ -146,3 +146,11 @@ export const getAllAtempts = async (
   const res = await quizApi.get(`/${quizId}/attempts`);
   return res.data;
 };
+
+export const createAtempt = async (
+  quizId: string,
+  username: string
+): Promise<ApiResponse<Attempt>> => {
+  const res = await quizApi.post(`/${quizId}/attempts`,{username});
+  return res.data;
+};

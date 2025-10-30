@@ -9,6 +9,7 @@ import { FaPlus } from "react-icons/fa";
 import { FaListUl } from "react-icons/fa";
 import QuizSettings from "./QuizSettingModal";
 import DeleteConfirmModal from "../QuizzesPage/ConfirmModal";
+import { FaPlay } from "react-icons/fa";
 export default function QuizDetailPage() {
   const params = useParams();
   const [url] = useSearchParams();
@@ -76,6 +77,12 @@ export default function QuizDetailPage() {
             title="Questions"
             icon={<FaListUl size={17} />}
             callback={() => navigate("/admin/questions")}
+          />
+           <FunctionButton
+            size={15}
+            title="Play"
+            icon={<FaPlay size={17} />}
+            callback={() => navigate(`/quizzes/pre-game/${quizId}`)}
           />
         </div>
         <div className="h-[1px] w-[100%] bg-[#e5e7eb]"></div>
