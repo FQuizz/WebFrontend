@@ -1,4 +1,4 @@
-import { ApiResponse, User } from "..";
+import { ApiResponse, refreshToken, User } from "..";
 import { config } from "process";
 import axios, { AxiosRequestConfig, InternalAxiosRequestConfig } from "axios";
 export interface Quiz {
@@ -83,6 +83,31 @@ export interface Attempt {
   score?: number;
   answers: Array<Answer>;
 }
+
+quizApi.interceptors.response.use(
+  (response) => response,
+  async (err) => {
+    const originalRequest = err.config;
+    console.log("Retry: " + originalRequest._retry);
+    if (err.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        console.log("refresh token");
+        await refreshToken();
+        console.log("new acess token: " + localStorage.getItem("accessToken"));
+        console.log(
+          "accessToken is new:" + originalRequest.headers.Authorization !==
+            `Bearer ${localStorage.getItem("accessToken")}`
+        );
+        return quizApi(originalRequest);
+      } catch (refreshErr) {
+        console.log(refreshErr);
+      }
+    }
+    return Promise.reject(err);
+  }
+);
+
 
 export const getAllPublicQuizzes = async (
   lastQuizId?: string

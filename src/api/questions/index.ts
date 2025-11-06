@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ApiResponse } from "..";
+import { ApiResponse, refreshToken } from "..";
 import { Question } from "../quizzes";
 
 interface CreatedChoice {
@@ -16,6 +16,7 @@ export interface CreateQuestionRequest {
   choices: Array<CreatedChoice>;
 }
 
+
 const questionApi = axios.create({
   baseURL: "http://localhost:8082/questions",
   headers: {
@@ -24,6 +25,31 @@ const questionApi = axios.create({
   },
 });
 
+
+questionApi.interceptors.response.use(
+  (response) => response,
+  async (err) => {
+    const originalRequest = err.config;
+    console.log("Retry: " + originalRequest._retry);
+    if (err.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        console.log("refresh token");
+        await refreshToken();
+        console.log("new acess token: " + localStorage.getItem("accessToken"));
+        console.log(
+          "accessToken is new:" + originalRequest.headers.Authorization !==
+            `Bearer ${localStorage.getItem("accessToken")}`
+        );
+        return questionApi(originalRequest);
+      } catch (refreshErr) {
+        console.log(refreshErr);
+        window.location.href = "/admin/home"
+      }
+    }
+    return Promise.reject(err);
+  }
+);
 
 export const getAllQuestion = async (): Promise<
   ApiResponse<Array<Question>>
