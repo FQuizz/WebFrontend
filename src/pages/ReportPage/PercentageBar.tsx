@@ -61,7 +61,7 @@ export default function PercentageBar({
           className="absolute font-bold text-gray-800"
           style={{ fontSize: indicator }}
         >
-          {String(percentage)}%
+          {String(percentage.toFixed(0))}%
         </div>
       )}
     </div>

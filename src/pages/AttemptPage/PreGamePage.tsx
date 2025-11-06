@@ -1,20 +1,26 @@
 import { createAtempt } from "@/api/quizzes";
+import { AuthContext } from "@/App";
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
 export default function PreGamePage() {
-  const [username, setUsername] = useState("");
-  const [error, setError] = useState("");
+  const { user } = useContext(AuthContext);
+  const [username, setUsername] = useState(() => (user ? user.username : ""));
+  const [error, setError] = useState<string>("");
   const params = useParams();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const handleStartGame = () => {
     if (username.trim() === "") {
       setError("the username is required");
       return;
     }
     createAtempt(params?.quizId as string, username)
-      .then((res) => navigate(`/quizzes/play/${params.quizId}/attempts/${res.data.attemptId}`))
+      .then((res) =>
+        navigate(
+          `/quizzes/play/${params.quizId}/attempts/${res.data.attemptId}`
+        )
+      )
       .catch((err) => {
         if (axios.isAxiosError(err)) {
           setError(err.response?.data.message);
@@ -40,7 +46,7 @@ export default function PreGamePage() {
             placeholder="Enter your name"
             className="outline-none border border-[#e5e7eb] text-[20px] p-2.5 rounded-lg font-sans focus:border-orange-400"
           />
-          {error.trim() !== "" && (
+          {error && error.trim() !== "" && (
             <small className="font-sans text-red-500 font-semibold">
               {error}
             </small>

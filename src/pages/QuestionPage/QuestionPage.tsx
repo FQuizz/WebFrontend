@@ -64,7 +64,7 @@ export default function QuestionPage() {
           </div>
           <div>
             {questions.map((question, index) => (
-              <>
+              <div key={question.questionId}>
                 {question.content !== "" && (
                   <QuesitonItem
                     index={index + 1}
@@ -75,7 +75,7 @@ export default function QuestionPage() {
                     isLastItem={index + 1 === questions?.length}
                   />
                 )}
-              </>
+              </div>
             ))}
           </div>
         </div>

@@ -23,7 +23,7 @@ export default function PlayQuizGame() {
   const [quiz, setQuiz] = useState<Quiz>();
   const [attempt, setAttempt] = useState<Attempt>();
   const [timer, setTimer] = useState<number>();
-  const [questionIndex, setQuestionIndex] = useState(1);
+  const [questionIndex, setQuestionIndex] = useState(0);
   const navigate = useNavigate();
   const params = useParams();
   useEffect(() => {
@@ -41,26 +41,28 @@ export default function PlayQuizGame() {
       .catch((err) => console.log(err));
   }, [questionIndex]);
 
-  //   useEffect(() => {
-  //     if (timer === 0) {
-  //       getNextQuestion();
-  //     }
-  //     const timerId = setTimeout(() => {
-  //       if (timer) {
-  //         setTimer((prev) => prev! - 1);
-  //       }
-  //     }, 1000);
-  //     return () => clearTimeout(timerId);
-  //   });
+  useEffect(() => {
+    if (timer === 0) {
+      getNextQuestion();
+    }
+    const timerId = setTimeout(() => {
+      if (timer) {
+        setTimer((prev) => prev! - 1);
+      }
+    }, 1000);
+    return () => clearTimeout(timerId);
+  });
 
   useEffect(() => {
     if (quiz && questionIndex >= quiz?.questions?.length!) {
       finishAttempt(params.attemptId as string)
-        .then((res) => {})
+        .then((res) => {
+          if (res.success)
+            navigate(
+              `/quizzes/summary/${params.quizId}/attempts/${params.attemptId}`
+            );
+        })
         .catch((err) => console.log(err));
-      navigate(
-        `/quizzes/summary/${params.quizId}/attempts/${params.attemptId}`
-      );
     } else {
       setTimer(quiz?.questions?.at(questionIndex)?.timeLimit);
     }
@@ -97,20 +99,20 @@ export default function PlayQuizGame() {
             </div>
           </div>
 
-            {quiz?.questions?.at(questionIndex)?.questionType ===
-              "SINGLE_CHOICE" && (
-              <SingleChoiceQuiz
-                nextQuestion={getNextQuestion}
-                currentQuestion={quiz?.questions?.at(questionIndex)!}
-              />
-            )}
-            {quiz?.questions?.at(questionIndex)?.questionType ===
-              "MULTIPLE_CHOICE" && (
-              <MutipleChoiceQuiz
-                nextQuestion={getNextQuestion}
-                currentQuestion={quiz?.questions?.at(questionIndex)!}
-              />
-            )}
+          {quiz?.questions?.at(questionIndex)?.questionType ===
+            "SINGLE_CHOICE" && (
+            <SingleChoiceQuiz
+              nextQuestion={getNextQuestion}
+              currentQuestion={quiz?.questions?.at(questionIndex)!}
+            />
+          )}
+          {quiz?.questions?.at(questionIndex)?.questionType ===
+            "MULTIPLE_CHOICE" && (
+            <MutipleChoiceQuiz
+              nextQuestion={getNextQuestion}
+              currentQuestion={quiz?.questions?.at(questionIndex)!}
+            />
+          )}
         </div>
       </div>
     </div>

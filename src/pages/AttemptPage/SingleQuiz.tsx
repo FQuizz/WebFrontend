@@ -42,7 +42,7 @@ export default function SingleChoiceQuiz({
     });
   };
   return (
-    <div className="grid grid-cols-4 gap-4.5 h-[50%]">
+    <div className="grid grid-cols-4 gap-4.5 h-[50%] text-center">
       {currentQuestion?.choices.map((choice) => (
         <div
           onClick={!selected ? () => handleSelect(choice) : undefined}

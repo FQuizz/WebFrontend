@@ -14,6 +14,9 @@ import HomePage from "@/pages/HomePage/HomePage";
 import PreGamePage from "@/pages/AttemptPage/PreGamePage";
 import PlayQuizGame from "@/pages/AttemptPage/PlayQuizGame";
 import SummaryPage from "@/pages/AttemptPage/SummaryPage";
+import RedirectPage from "@/pages/RedirectPage";
+import Callback from "@/pages/Callback";
+import NotFoundPage from "@/pages/NotFound";
 
 export interface Route {
   path: string;
@@ -24,16 +27,31 @@ export interface Route {
 
 export const routes: Array<Route> = [
   {
+    path: "*",
+    component: NotFoundPage,
+    isAuth: false,
+  },
+  {
+    path: "/:shortCode",
+    component: RedirectPage,
+    isAuth: false,
+  },
+  {
+    path: "/callback",
+    component: Callback,
+    isAuth: false,
+  },
+  {
     path: "/admin/home",
     component: HomePage,
-    layout:HomePageLayout,
+    layout: HomePageLayout,
     isAuth: false,
   },
   {
     path: "/admin/quizzes",
     component: QuizzesPage,
     layout: HomePageLayout,
-    isAuth: false,
+    isAuth: true,
   },
   {
     path: "/admin/quizzes/:quizId",
@@ -86,15 +104,16 @@ export const routes: Array<Route> = [
   {
     path: "/quizzes/pre-game/:quizId",
     component: PreGamePage,
-    isAuth: false
+    isAuth: false,
   },
   {
     path: "/quizzes/play/:quizId/attempts/:attemptId",
     component: PlayQuizGame,
-    isAuth: false
-  },{
-    path:"/quizzes/summary/:quizId/attempts/:attemptId",
+    isAuth: false,
+  },
+  {
+    path: "/quizzes/summary/:quizId/attempts/:attemptId",
     component: SummaryPage,
-    isAuth:false
-  }
+    isAuth: false,
+  },
 ];

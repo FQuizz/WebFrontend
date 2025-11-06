@@ -1,6 +1,6 @@
-import axios from "axios";
-import { ApiResponse } from "..";
-
+import { ApiResponse, User } from "..";
+import { config } from "process";
+import axios, { AxiosRequestConfig, InternalAxiosRequestConfig } from "axios";
 export interface Quiz {
   quizId: string;
   title: string;
@@ -8,9 +8,19 @@ export interface Quiz {
   totalQuestion: number;
   totalAttempt: number;
   visibility: string;
-  createBy: number;
+  createBy: {
+    id: number;
+    profileImageUrl: string;
+    username: string;
+    email: string;
+  };
   createAt: Date;
-  modifiedBy: number;
+  modifiedBy: {
+    id: number;
+    profileImageUrl: string;
+    username: string;
+    email: string;
+  };
   modifiedAt: Date;
   questions?: Array<Question>;
 }
@@ -79,21 +89,29 @@ export const getAllPublicQuizzes = async (
 ): Promise<ApiResponse<Array<Quiz>>> => {
   const res = await quizApi.get("/all", {
     params: {
-      lastQuizId
+      lastQuizId,
     },
   });
   return res.data;
 };
 
 export const getAllQuizzes = async (): Promise<ApiResponse<Array<Quiz>>> => {
-  const res = await quizApi.get("");
+  const res = await quizApi.get("", {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+    },
+  });
   return res.data;
 };
 
 export const getAllQuizzesForReport = async (): Promise<
   ApiResponse<Array<Quiz>>
 > => {
-  const res = await quizApi.get("/report");
+  const res = await quizApi.get("/report", {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+    },
+  });
   return res.data;
 };
 
@@ -113,7 +131,11 @@ export const addQuestion = async (
 };
 
 export const createQuiz = async (data: Object): Promise<ApiResponse<Quiz>> => {
-  const res = await quizApi.post("", data);
+  const res = await quizApi.post("", data, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+    },
+  });
   return res.data;
 };
 
@@ -121,14 +143,22 @@ export const updateQuiz = async (
   quizId: string,
   data: Object
 ): Promise<ApiResponse<Quiz>> => {
-  const res = await quizApi.put(`/${quizId}`, data);
+  const res = await quizApi.put(`/${quizId}`, data, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+    },
+  });
   return res.data;
 };
 
 export const deleteQuiz = async (
   quizId: string
 ): Promise<ApiResponse<Quiz>> => {
-  const res = await quizApi.delete(`/${quizId}`);
+  const res = await quizApi.delete(`/${quizId}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+    },
+  });
   return res.data;
 };
 
@@ -151,6 +181,8 @@ export const createAtempt = async (
   quizId: string,
   username: string
 ): Promise<ApiResponse<Attempt>> => {
-  const res = await quizApi.post(`/${quizId}/attempts`,{username});
+  const res = await quizApi.post(`/${quizId}/attempts`, { username });
   return res.data;
 };
+
+quizApi.interceptors.request.clear();

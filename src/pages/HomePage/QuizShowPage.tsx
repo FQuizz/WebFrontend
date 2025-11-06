@@ -1,14 +1,16 @@
 import { getQuizById, Question, Quiz } from "@/api/quizzes";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FaCheckCircle, FaPlus } from "react-icons/fa";
 import { useNavigate, useSearchParams } from "react-router";
 import { FaPlay } from "react-icons/fa";
 import QuizModal from "../QuestionPage/QuizModal";
+import { AuthContext } from "@/App";
 interface Props {
   quiz: Quiz;
 }
 export default function QuizShowPage({ quiz }: Props) {
   const [questions, setQuestions] = useState<Array<Question>>([]);
+  const { isAuth } = useContext(AuthContext);
   const [url, setUrl] = useSearchParams();
   const navigate = useNavigate();
   useEffect(() => {
@@ -44,7 +46,7 @@ export default function QuizShowPage({ quiz }: Props) {
           </div>
         </div>
         <div>
-          {questions.map((question, index) => (
+          {questions?.map((question, index) => (
             <div
               key={question.questionId}
               className="flex flex-col gap-[15px] px-[20px] py-[15px]"
@@ -52,21 +54,23 @@ export default function QuizShowPage({ quiz }: Props) {
               <div className="h-[1px] bg-[#e5e7eb]"></div>
               <div className="flex items-center justify-between">
                 <div className="text-[14px]">
-                  <span>{index}. </span>
+                  <span>{index + 1}. </span>
                   <span>{question.questionType.replace("_", " ")}</span>
                   <span> • {question.timeLimit} sec</span>
                   <span> • {question.point} pt</span>
                 </div>
                 <div className="flex items-center gap-[10px]">
-                  <div
-                    onClick={() => {
-                      url.append("questionId", question.questionId);
-                      setUrl(url);
-                    }}
-                    className="px-[15px] py-[8px] border border-[#e5e7eb] rounded-[16px] cursor-pointer hover:bg-[#e5e7eb]"
-                  >
-                    <FaPlus />
-                  </div>
+                  {isAuth && (
+                    <div
+                      onClick={() => {
+                        url.append("questionId", question.questionId);
+                        setUrl(url);
+                      }}
+                      className="px-[15px] py-[8px] border border-[#e5e7eb] rounded-[16px] cursor-pointer hover:bg-[#e5e7eb]"
+                    >
+                      <FaPlus />
+                    </div>
+                  )}
                 </div>
               </div>
               <div>

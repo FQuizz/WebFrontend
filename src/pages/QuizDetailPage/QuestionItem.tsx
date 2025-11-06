@@ -5,8 +5,9 @@ import { LiaEditSolid } from "react-icons/lia";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { useNavigate, useSearchParams } from "react-router";
 import { deleteQuestion } from "@/api/questions";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useContext } from "react";
 import { FaPlus } from "react-icons/fa";
+import { AuthContext } from "@/App";
 interface Props {
   index: number;
   showAnswer: boolean;
@@ -24,6 +25,7 @@ export default function QuesitonItem({
   onAddQuestion,
 }: Props) {
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
   const [url, setUrl] = useSearchParams();
   return (
     <div
@@ -40,32 +42,38 @@ export default function QuesitonItem({
           <span> • {question.point} pt</span>
         </div>
         <div className="flex items-center gap-[10px]">
-          <FunctionButton
-            size={10}
-            title="Edit"
-            icon={<LiaEditSolid size={17} />}
-            callback={() =>
-              navigate(`/admin/questions/${question.questionId}/edit`)
-            }
-          />
-          {onAddQuestion && (
-            <div
-              onClick={() => {
-                url.append("questionId", question.questionId);
-                setUrl(url);
-                onAddQuestion!();
-              }}
-              className="px-[15px] py-[8px] border border-[#e5e7eb] rounded-[16px] cursor-pointer hover:bg-[#e5e7eb]"
-            >
-              <FaPlus />
-            </div>
+          {user?.sub == question.createBy && (
+            <>
+              <FunctionButton
+                size={10}
+                title="Edit"
+                icon={<LiaEditSolid size={17} />}
+                callback={() =>
+                  navigate(`/admin/questions/${question.questionId}/edit`)
+                }
+              />
+              {onAddQuestion && (
+                <div
+                  onClick={() => {
+                    url.append("questionId", question.questionId);
+                    setUrl(url);
+                    onAddQuestion!();
+                  }}
+                  className="px-[15px] py-[8px] border border-[#e5e7eb] rounded-[16px] cursor-pointer hover:bg-[#e5e7eb]"
+                >
+                  <FaPlus />
+                </div>
+              )}
+              <div
+                onClick={() =>
+                  navigate(`?deleteQuestionId=${question.questionId}`)
+                }
+                className="px-[15px] py-[8px] border border-[#e5e7eb] rounded-[16px] cursor-pointer hover:bg-[#e5e7eb]"
+              >
+                <FaRegTrashAlt />
+              </div>
+            </>
           )}
-          <div
-            onClick={() => navigate(`?deleteQuestionId=${question.questionId}`)}
-            className="px-[15px] py-[8px] border border-[#e5e7eb] rounded-[16px] cursor-pointer hover:bg-[#e5e7eb]"
-          >
-            <FaRegTrashAlt />
-          </div>
         </div>
       </div>
       <div>

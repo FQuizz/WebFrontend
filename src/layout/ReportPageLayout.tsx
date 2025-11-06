@@ -111,12 +111,12 @@ export default function ReportPageLayout({ children }: Props) {
               <FigureItem
                 icon={<GoGoal size={20} />}
                 title="Accuracy"
-                figure={String(calculateAccuracy.toPrecision(2)) + "%"}
+                figure={String(calculateAccuracy.toFixed(0)) + "%"}
               />
               <FigureItem
                 icon={<GoGoal size={20} />}
                 title="Completion Rate"
-                figure={attempts.length === 0 ? "0%" : String((attempts.filter(attempt => attempt.attemptStatus === "COMPLETED").length / attempts.length * 100).toPrecision(2)) + "%"}
+                figure={attempts.length === 0 ? "0%" : String((attempts.filter(attempt => attempt.attemptStatus === "COMPLETED").length / attempts.length * 100).toFixed(0)) + "%"}
               />
               <FigureItem
                 icon={<MdGroups2 size={20} />}

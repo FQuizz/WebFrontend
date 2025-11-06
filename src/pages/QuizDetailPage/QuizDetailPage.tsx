@@ -1,5 +1,5 @@
 import { getQuizById, Quiz } from "@/api/quizzes";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router";
 import QuesitonItem from "./QuestionItem";
 import FunctionButton from "./FunctionButton";
@@ -10,7 +10,11 @@ import { FaListUl } from "react-icons/fa";
 import QuizSettings from "./QuizSettingModal";
 import DeleteConfirmModal from "../QuizzesPage/ConfirmModal";
 import { FaPlay } from "react-icons/fa";
+import { createShortLink } from "@/api/shortlink/shortlink";
+import { AuthContext } from "@/App";
+
 export default function QuizDetailPage() {
+  const { user } = useContext(AuthContext);
   const params = useParams();
   const [url] = useSearchParams();
   const navigate = useNavigate();
@@ -21,11 +25,29 @@ export default function QuizDetailPage() {
     getQuizById(quizId)
       .then((res) => {
         if (res.success) {
+          console.log(user);
+          console.log(res.data);
           setQuiz(res.data);
         }
       })
       .catch((err) => console.log(err));
   }, [url]);
+
+  const handleCopyLink = () => {
+    createShortLink(params.quizId as string)
+      .then((res) => {
+        const shortUrl = `http://localhost:3000/${res.data.shortCode}`;
+        setTimeout(() => {
+          navigator.clipboard
+            .writeText(shortUrl)
+            .then(async () => {
+              window.alert("Copied link to clipboard successfully!");
+            })
+            .catch((err: Error) => console.error("Failed to copy link:", err));
+        }, 0);
+      })
+      .catch((err) => console.log(err));
+  };
   return (
     <>
       {quiz && <QuizSettings editQuiz={quiz} />}
@@ -43,16 +65,18 @@ export default function QuizDetailPage() {
             <div className="font-[800] text-[18px]">
               {quiz?.title !== "" ? quiz?.title : "Untitled"}
             </div>
-            <div className="w-[300px] text-wrap font-sans">{quiz?.description}</div>
+            <div className="w-[300px] text-wrap font-sans">
+              {quiz?.description}
+            </div>
             <div className="flex items-center gap-[10px]">
               <div className="w-[25px] h-[25px]">
                 <img
-                  src="https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+                  src={quiz?.createBy.profileImageUrl}
                   alt=""
                   className="w-[100%] h-[100%] object-cover rounded-[50%]"
                 />
               </div>
-              <div>Khoa Nguyen</div>
+              <div>{quiz?.createBy.username}</div>
               <div>•</div>
               <div>Category</div>
               <div>•</div>
@@ -61,24 +85,30 @@ export default function QuizDetailPage() {
           </div>
         </div>
         <div className="flex gap-[10px]">
+          {user?.sub == quiz?.createBy.id && (
+            <FunctionButton
+              size={15}
+              title="Setting"
+              icon={<MdOutlineSettings size={17} />}
+              callback={() => navigate("?edit")}
+            />
+          )}
+
           <FunctionButton
-            size={15}
-            title="Setting"
-            icon={<MdOutlineSettings size={17} />}
-            callback={() => navigate("?edit")}
-          />
-          {/* <FunctionButton
             size={15}
             title="Share"
             icon={<FaShare size={17} />}
-          /> */}
-          <FunctionButton
-            size={15}
-            title="Questions"
-            icon={<FaListUl size={17} />}
-            callback={() => navigate("/admin/questions")}
+            callback={() => handleCopyLink()}
           />
-           <FunctionButton
+          {user?.sub == quiz?.createBy.id && (
+            <FunctionButton
+              size={15}
+              title="Questions"
+              icon={<FaListUl size={17} />}
+              callback={() => navigate("/admin/questions")}
+            />
+          )}
+          <FunctionButton
             size={15}
             title="Play"
             icon={<FaPlay size={17} />}

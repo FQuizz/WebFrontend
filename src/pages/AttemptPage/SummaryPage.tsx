@@ -6,7 +6,7 @@ import {
   Question,
   Quiz,
 } from "@/api/quizzes";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router";
 import { FaMedal } from "react-icons/fa";
 import { FaStar } from "react-icons/fa6";
@@ -29,36 +29,50 @@ export default function SummaryPage() {
   }, []);
 
   const calculateTimeGap = () => {
-    const created = new Date(attempt?.createAt!);
-    const completed = new Date(attempt?.completeAt!);
+    console.log("createAt:", attempt?.createAt);
+    console.log("completeAt:", attempt?.completeAt);
+    console.log("quiz length:", quiz?.questions?.length);
+    if (!attempt?.createAt || !attempt?.completeAt || !quiz?.questions?.length)
+      return "-";
+
+    const created = new Date(attempt.createAt);
+    const completed = new Date(attempt.completeAt);
+
+    if (isNaN(created.getTime()) || isNaN(completed.getTime()))
+      return "Invalid date";
 
     const diffMs =
-      (completed.getTime() - created.getTime()) / quiz?.questions?.length!; // milliseconds
-    const diffSec = Math.floor(diffMs / 1000); // seconds
-    const diffMin = Math.floor(diffSec / 60); // minutes
-    const diffHr = Math.floor(diffMin / 60); // hours
-    return `${diffHr !== 0 ? diffHr + "h" : ""}${
-      diffMin !== 0 ? diffMin + "m" : ""
-    } ${diffSec}s`;
+      Math.abs(completed.getTime() - created.getTime()) / quiz.questions.length;
+    const diffSec = Math.floor(diffMs / 1000);
+    const diffMin = Math.floor(diffSec / 60);
+    const diffHr = Math.floor(diffMin / 60);
+
+    const sec = diffSec % 60;
+    const min = diffMin % 60;
+    const hr = diffHr;
+
+    return `${hr > 0 ? hr + "h " : ""}${min > 0 ? min + "m " : ""}${sec}s`;
   };
+
+  const timeGap = useMemo(() => calculateTimeGap(), [attempt, quiz]);
 
   const getAnswer = (question: Question): string => {
     const answer = attempt?.answers.find(
       (answer) => answer.question === question.questionId
     );
-    if(answer){
-        switch (answer.result){
-            case AnswerResult.CORRECT:
-                return "green"
-            case AnswerResult.INCORRECT:
-                return "red"
-            case AnswerResult.PARTIAL:
-                return "blue"
-            default: 
-                return "gray"
-        }
+    if (answer) {
+      switch (answer.result) {
+        case AnswerResult.CORRECT:
+          return "green";
+        case AnswerResult.INCORRECT:
+          return "red";
+        case AnswerResult.PARTIAL:
+          return "blue";
+        default:
+          return "gray";
+      }
     }
-    return "gray"
+    return "gray";
   };
 
   return (
@@ -88,12 +102,13 @@ export default function SummaryPage() {
                 }}
               >
                 <div className="absolute -top-1.5 -right-1 bottom-0 bg-white text-black text-[10px] flex items-center justify-center font-sans px-2.5 py-3.5 rounded-xl">
-                  {attempt?.answers.length === 0
+                  {(attempt?.answers.length === 0
                     ? 0
                     : attempt?.answers.reduce(
                         (prev, cur) => prev + cur.accuracyFactor!,
                         0
-                      )! / attempt?.answers.length!}
+                      )! / attempt?.answers.length!
+                  ).toFixed(0)}
                   %
                 </div>
               </div>
@@ -117,7 +132,9 @@ export default function SummaryPage() {
           </div>
 
           <div>
-            <div className="text-center text-[18px] font-semibold">Perfomance Stats</div>
+            <div className="text-center text-[18px] font-semibold">
+              Perfomance Stats
+            </div>
             <div className="grid grid-cols-3 gap-2.5 py-2">
               <div className="flex flex-col items-center justify-center border border-[#c3bebe] rounded-lg bg-green-600 py-1">
                 <div className="font-semibold text-[18px]">
@@ -152,9 +169,14 @@ export default function SummaryPage() {
             </div>
             <div className="grid grid-cols-2 gap-2.5 py-2">
               <div className="flex flex-col items-center justify-center border border-[#c3bebe] rounded-lg bg-blue-600 py-1">
-                <div className="font-semibold text-[18px]">
-                  {calculateTimeGap()}
-                </div>
+                {attempt && quiz ? (
+                  <div className="font-semibold text-[18px]">
+                    {calculateTimeGap()}
+                  </div>
+                ) : (
+                  <div className="font-semibold text-[18px]">_</div>
+                )}
+
                 <div>Time/ques</div>
               </div>
               <div className="flex flex-col items-center justify-center border border-[#c3bebe] rounded-lg bg-purple-600 py-1">

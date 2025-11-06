@@ -1,5 +1,6 @@
 import { AnswerResult, Attempt, Question } from "@/api/quizzes";
 import { QuizContext } from "@/layout/ReportPageLayout";
+import { FaUser } from "react-icons/fa";
 import { memo, useContext, useMemo } from "react";
 
 export default function OverviewPage() {
@@ -91,9 +92,12 @@ export default function OverviewPage() {
                 key={attempt.attemptId}
                 className="border-t border-t-[#e5e7eb] text-sm text-gray-800"
               >
-                <td className="py-2 px-4 text-left">{attempt.username}</td>
-                <td className="py-2 px-4">{attempt.score}</td>
-                <td className="py-2 px-4">{calculatePoint(attempt)}</td>
+                <td className="py-2 px-4 text-left font-semibold flex items-center gap-2.5">
+                    <span><FaUser /></span>
+                    <span>{attempt.username}</span>
+                </td>
+                <td className="py-2 px-4 font-bold">{attempt.score}</td>
+                <td className="py-2 px-4 font-semibold">{calculatePoint(attempt)}</td>
 
                 {questions.map((question, qIndex) => {
                   const result = answerMap.get(question.questionId);

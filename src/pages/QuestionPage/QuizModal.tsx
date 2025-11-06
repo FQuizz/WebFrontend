@@ -16,7 +16,7 @@ export default function QuizModal() {
         }
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [url]);
 
   useEffect(() => {
     if (url.keys().toArray().includes("questionId")) {
@@ -58,6 +58,9 @@ export default function QuizModal() {
 
             {/* Body */}
             <div className="p-4 flex flex-col gap-4">
+                {quizzes.length === 0 && (
+                    <div className="flex items-center justify-center">No created quiz</div>
+                )}
               {quizzes.map((quiz) => (
                 <div
                   key={quiz.quizId}

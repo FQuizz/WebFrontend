@@ -13,15 +13,17 @@ export interface CreateQuestionRequest {
   fact: string;
   point: number;
   timeLimit: number;
-  choices : Array<CreatedChoice>;
+  choices: Array<CreatedChoice>;
 }
 
 const questionApi = axios.create({
   baseURL: "http://localhost:8082/questions",
   headers: {
     "Content-Type": "application/json",
+    Authorization: `Bearer ${localStorage.getItem('accessToken')}`
   },
 });
+
 
 export const getAllQuestion = async (): Promise<
   ApiResponse<Array<Question>>
@@ -30,20 +32,27 @@ export const getAllQuestion = async (): Promise<
   return res.data;
 };
 
-export const getQuestion = async (id : string ) : Promise<ApiResponse<Question>> => {
-    const res = await questionApi.get( `/${id}`)
-    return res.data
-} 
+export const getQuestion = async (
+  id: string
+): Promise<ApiResponse<Question>> => {
+  const res = await questionApi.get(`/${id}`);
+  return res.data;
+};
 
-export const editQuestion = async (id : string , data : CreateQuestionRequest) : Promise<ApiResponse<Question>> => {
-    const res = await questionApi.put(`/${id}`,data)
-    return res.data
-} 
+export const editQuestion = async (
+  id: string,
+  data: CreateQuestionRequest
+): Promise<ApiResponse<Question>> => {
+  const res = await questionApi.put(`/${id}`, data);
+  return res.data;
+};
 
-export const deleteQuestion = async (id :string) :  Promise<ApiResponse<string>> => {
-    const res = await questionApi.delete(`/${id}`)
-    return res.data
-}
+export const deleteQuestion = async (
+  id: string
+): Promise<ApiResponse<string>> => {
+  const res = await questionApi.delete(`/${id}`);
+  return res.data;
+};
 
 export const createQuestion = async (
   data: CreateQuestionRequest
@@ -51,3 +60,7 @@ export const createQuestion = async (
   const res = await questionApi.post("", data);
   return res.data;
 };
+
+
+
+
