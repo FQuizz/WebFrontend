@@ -1,0 +1,33 @@
+name: Build and Test React App (Bun)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Setup Bun
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+
+      # 3️⃣ Install dependencies
+      - name: Install dependencies
+        run: bun install
+
+      # 4️⃣ Run tests
+      - name: Run tests
+        run: bun test
+
+      # 5️⃣ Build React app
+        # assuming you use Vite, CRA, or Next.js with Bun
+      - name: Build project
+        run: bun run build
