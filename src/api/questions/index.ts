@@ -21,7 +21,7 @@ const BACKEND_HOST : string = process.env.USER_HOST as string| "localhost"
 const BACKEND_PORT : number = Number(process.env.USER_PORT) | 8082
 
 const questionApi = axios.create({
-  baseURL: `http://${BACKEND_HOST}:${BACKEND_PORT}/questions`,
+  baseURL: `http://web-service:8082/questions`,
   headers: {
     "Content-Type": "application/json",
     Authorization: `Bearer ${localStorage.getItem('accessToken')}`

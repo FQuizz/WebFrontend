@@ -10,7 +10,7 @@ const attemptApi = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  baseURL: `http://${BACKEND_HOST}:${BACKEND_PORT}/attempts`,
+  baseURL: `http://web-service:8082/attempts`,
 });
 
 export const getAttempt = async (

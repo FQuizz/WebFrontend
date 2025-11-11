@@ -1,8 +1,5 @@
 import axios from "axios";
 
-const USER_HOST : string = process.env.USER_HOST as string| "localhost"
-const USER_PORT : number = Number(process.env.USER_PORT) | 8086
-
 export interface ApiResponse<T> {
   success: boolean;
   message: string;
@@ -16,14 +13,14 @@ export interface User {
   username: string;
 }
 const userApi = axios.create({
-  baseURL: `http://${USER_HOST}:${USER_PORT}`,
+  baseURL: `http://authorization-server:8082`,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
 const refreshTokenApi = axios.create({
-  baseURL: `http://${USER_HOST}:${USER_PORT}/oauth2`,
+  baseURL: `http://authorization-server:8086/oauth2`,
   headers: {
     "Content-Type": "application/x-www-form-urlencoded",
     Authorization: `Basic ${btoa("client:secrets")}`,
