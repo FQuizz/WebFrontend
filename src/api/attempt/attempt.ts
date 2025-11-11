@@ -1,11 +1,16 @@
 import axios from "axios";
 import { ApiResponse } from "..";
 import { Answer, Attempt } from "../quizzes";
+
+
+const BACKEND_HOST : string = process.env.USER_HOST as string| "localhost"
+const BACKEND_PORT : number = Number(process.env.USER_PORT) | 8082
+
 const attemptApi = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  baseURL: "http://localhost:8082/attempts",
+  baseURL: `http://${BACKEND_HOST}:${BACKEND_PORT}/attempts`,
 });
 
 export const getAttempt = async (
