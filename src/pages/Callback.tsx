@@ -11,7 +11,7 @@ function Callback() {
 
     const urlencoded = new URLSearchParams();
     urlencoded.append("client_id", "client");
-    urlencoded.append("redirect_uri", "http://web-ui:3000/callback");
+    urlencoded.append("redirect_uri", "http://localhost/callback");
     urlencoded.append("grant_type", "authorization_code");
     urlencoded.append("code", code);
     const requestOptions: RequestInit = {
@@ -20,7 +20,7 @@ function Callback() {
       body: urlencoded.toString(),
       redirect: "follow",
     };
-    fetch("http://web-service:8082/oauth2/token", requestOptions)
+    fetch("http://localhost/auth/oauth2/token", requestOptions)
       .then((response) => {
         if (response.ok) {
           return response.json();

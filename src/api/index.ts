@@ -13,14 +13,14 @@ export interface User {
   username: string;
 }
 const userApi = axios.create({
-  baseURL: `http://authorization-server:8082`,
+  baseURL: "http://localhost/auth",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
 const refreshTokenApi = axios.create({
-  baseURL: `http://authorization-server:8086/oauth2`,
+  baseURL: "http://localhost/auth",
   headers: {
     "Content-Type": "application/x-www-form-urlencoded",
     Authorization: `Basic ${btoa("client:secrets")}`,
@@ -30,7 +30,7 @@ const refreshTokenApi = axios.create({
 export const refreshToken = async () => {
   console.log("Call get new access token");
   try {
-    const res = await refreshTokenApi.post("/token", {
+    const res = await refreshTokenApi.post("/oath2/token", {
       client_id: "client",
       refresh_token: localStorage.getItem("refreshToken"),
       grant_type: "refresh_token",

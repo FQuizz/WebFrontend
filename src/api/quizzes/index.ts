@@ -1,5 +1,4 @@
 import { ApiResponse, refreshToken, User } from "..";
-import { config } from "process";
 import axios, { AxiosRequestConfig, InternalAxiosRequestConfig } from "axios";
 export interface Quiz {
   quizId: string;
@@ -47,7 +46,7 @@ export interface Choice {
 }
 
 const quizApi = axios.create({
-  baseURL: `http://web-service:8082/quizzes`,
+  baseURL: `http://localhost/api/quizzes`,
   headers: {
     "Content-Type": "application/json",
   },

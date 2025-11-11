@@ -14,7 +14,7 @@ const shortlinkApi = axios.create({
     headers:{
         "Content-Type":"application/json",
     },
-    baseURL:"http://localhost:8082/shortlinks",
+    baseURL:"http://localhost/api/shortlinks",
     
 })
 

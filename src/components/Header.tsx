@@ -47,7 +47,7 @@ export default function Header() {
             className="flex items-center justify-around gap-1.5 px-3 py-2 bg-orange-400 text-white rounded-lg text-[13px] cursor-pointer hover:opacity-[0.8]"
             onClick={() =>
               window.location.replace(
-                "http://authorization-server:8086/oauth2/authorize?response_type=code&client_id=client&scope=openid&redirect_uri=http://localhost:3000/callback"
+                "http://localhost/auth/oauth2/authorize?response_type=code&client_id=client&scope=openid&redirect_uri=http://localhost:3000/callback"
               )
             }
           >

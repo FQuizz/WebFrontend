@@ -18,7 +18,7 @@ export interface CreateQuestionRequest {
 
 
 const questionApi = axios.create({
-  baseURL: `http://web-service:8082/questions`,
+  baseURL: `http://localhost/api/questions`,
   headers: {
     "Content-Type": "application/json",
     Authorization: `Bearer ${localStorage.getItem('accessToken')}`
