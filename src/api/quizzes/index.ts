@@ -46,9 +46,6 @@ export interface Choice {
   isCorrect: boolean;
 }
 
-const BACKEND_HOST : string = process.env.USER_HOST as string| "localhost"
-const BACKEND_PORT : number = Number(process.env.USER_PORT) | 8082
-
 const quizApi = axios.create({
   baseURL: `http://web-service:8082/quizzes`,
   headers: {

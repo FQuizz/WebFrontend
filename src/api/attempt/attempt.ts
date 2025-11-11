@@ -3,8 +3,6 @@ import { ApiResponse } from "..";
 import { Answer, Attempt } from "../quizzes";
 
 
-const BACKEND_HOST : string = process.env.USER_HOST as string| "localhost"
-const BACKEND_PORT : number = Number(process.env.USER_PORT) | 8082
 
 const attemptApi = axios.create({
   headers: {
