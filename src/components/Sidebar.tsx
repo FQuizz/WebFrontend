@@ -71,7 +71,7 @@ export default function Sidebar() {
                 onClick={async () => {
                   const tokenId = localStorage.getItem("tokenId");
                   localStorage.clear();
-                  window.location.href = `http://localhost:8086/logout?token_id_hint=${tokenId}&post_logout_redirect_uri=http://localhost:3000/admin/home`;
+                  window.location.href = `http://authorization-server:8086/logout?token_id_hint=${tokenId}&post_logout_redirect_uri=http://web-ui:3000/admin/home`;
                 }}
                 className="flex items-center justify-center gap-2.5 w-full px-4 py-2 bg-orange-400 text-white rounded-lg text-[13px] cursor-pointer hover:opacity-[0.8]"
               >
